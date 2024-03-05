@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load the dataset
-  # Replace with the actual URL or file path
 df = pd.read_csv("dashboard/day.csv")
 df['dteday'] = pd.to_datetime(df['dteday'])
 
