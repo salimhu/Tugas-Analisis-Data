@@ -23,7 +23,7 @@ else:
     st.sidebar.write("No columns selected.")
 
 # Image display in the sidebar
-image_path = "dashboard\logo.jpeg" 
+image_path = "dashboard/logo.jpeg" 
 st.sidebar.image(image_path, caption="Sepedah", use_column_width=True)
 
 # Add filters to the sidebar
