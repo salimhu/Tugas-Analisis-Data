@@ -28,15 +28,15 @@ st.sidebar.image(image_path, caption="Sepedah", use_column_width=True)
 # Add filters to the sidebar
 selected_season = st.sidebar.selectbox("Select Season", sorted(df['season'].unique()))
 selected_month = st.sidebar.selectbox("Select Month", sorted(df['month'].unique()))
-selected_weather = st.sidebar.selectbox("Select Weather Situation", sorted(df['weathersit'].unique()))
+selected_weather = st.sidebar.selectbox("Select Weather Situation", sorted(df['weathers'].unique()))
 
 # Filter the data based on selected options
-filtered_data = df[(df['season'] == selected_season) & (df['month'] == selected_month) & (df['weathersit'] == selected_weather)]
+filtered_data = df[(df['season'] == selected_season) & (df['month'] == selected_month) & (df['weathers'] == selected_weather)]
 
 # Scatter plot for temperature vs. bike counts
 st.subheader("Sepedah and Temperature")
 fig, ax = plt.subplots(figsize=(8, 6))
-sns.histplot(x='temp', y='count', data=df, ax=ax)
+sns.histplot(x='temperature', y='count', data=df, ax=ax)
 st.pyplot(fig)
 
 # Line chart for daily bike counts
