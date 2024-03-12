@@ -28,7 +28,7 @@ st.sidebar.image(image_path, caption="Sepedah", use_column_width=True)
 # Add filters to the sidebar
 selected_season = st.sidebar.selectbox("Select Season", sorted(df['season'].unique()))
 selected_month = st.sidebar.selectbox("Select Month", sorted(df['month'].unique()))
-selected_weather = st.sidebar.selectbox("Select Weather Situation", sorted(df['weathers'].unique()))
+selected_weather = st.sidebar.selectbox("Select Weather", sorted(df['weathers'].unique()))
 
 # Filter the data based on selected options
 filtered_data = df[(df['season'] == selected_season) & (df['month'] == selected_month) & (df['weathers'] == selected_weather)]
