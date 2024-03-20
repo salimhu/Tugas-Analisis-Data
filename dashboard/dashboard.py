@@ -5,49 +5,55 @@ import seaborn as sns
 
 # Load the dataset
 df = pd.read_csv("dashboard/day.csv")
-df['date'] = pd.to_datetime(df['date'])
 
-# Streamlit App
-st.title("Sepedah Rodalink Dashboard")
+# Set the page title and layout
+st.set_page_config(page_title="Bike Dataset Dashboard", layout="wide")
+
+# Display the header
+st.title("We Know Sepedah")
 
 # Add sidebar
 st.sidebar.header("Dashboard Sepedah")
-
-# Multiselect to choose columns
-selected_columns = st.sidebar.multiselect("Select Columns", df.columns)
-if selected_columns:
-    st.sidebar.write("Selected Columns:")
-    st.sidebar.write(selected_columns)
-else:
-    st.sidebar.write("No columns selected.")
 
 # Image display in the sidebar
 image_path = "dashboard/logo.jpeg" 
 st.sidebar.image(image_path, caption="Sepedah", use_column_width=True)
 
-# Add filters to the sidebar
-selected_season = st.sidebar.selectbox("Select Season", sorted(df['season'].unique()))
-selected_month = st.sidebar.selectbox("Select Month", sorted(df['month'].unique()))
-selected_weather = st.sidebar.selectbox("Select Weather", sorted(df['weathers'].unique()))
+# Create a mapping for the weathers
+weather_map = {1: 'sunny', 2: 'cloudy', 3: 'snow'}
 
-# Filter the data based on selected options
-filtered_data = df[(df['season'] == selected_season) & (df['month'] == selected_month) & (df['weathers'] == selected_weather)]
+# Map the weathers and create a new DataFrame
+df['weather_name'] = df['weathers'].map(weather_map)
+weather_analysis = df.groupby('weather_name').agg({
+    'count': 'mean',
+    'temperature': 'mean'
+}).reset_index()
 
-# Scatter plot for temperature vs. bike counts
-st.subheader("Sepedah and Temperature")
-fig, ax = plt.subplots(figsize=(8, 6))
-sns.histplot(x='temperature', y='count', data=df, ax=ax)
+# Create a dropdown menu to select the weather type
+weather_filter = st.selectbox("Select a weather type:", weather_analysis['weather_name'])
+
+# Filter the data based on the selected weather type
+selected_data = df[df['weather_name'] == weather_filter]
+
+# Display the bar plot for the selected weather type
+fig,ax = plt.subplots()
+sns.barplot(x='weather_name', y='count', data=selected_data, ax=ax)
+plt.title(f'Average Bike Loans for {weather_filter} Weather')
+plt.xlabel('Weather')
+plt.ylabel('Average Bike Loans')
 st.pyplot(fig)
 
-# Line chart for daily bike counts
-st.subheader("Sepedah Over Time")
+# Preprocessing
+df['day_type'] = df['holiday'].apply(lambda x: 'Holiday' if x == 1 else 'Workingday')
+
+# Calculate the average count of bikes for each day type
+average_count_by_day_type = df.groupby('day_type')['count'].mean()
+
+# Plotting
 fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(x='date', y='count', data=df, ax=ax)
-st.pyplot(fig)
-
-# Bar chart for bike counts by season
-st.subheader("Sepedah by Season")
-season_counts = df.groupby('season')['count'].sum()
-fig, ax = plt.subplots()
-season_counts.plot(kind='bar', ax=ax)
+average_count_by_day_type.plot(kind='bar', color=['orange', 'blue'], ax=ax)
+plt.title('Average Bike Count on Holidays and Workingdays')
+plt.xlabel('Day Type')
+plt.ylabel('Average Bike Count')
+plt.xticks(rotation=0)
 st.pyplot(fig)
